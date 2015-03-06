@@ -85,7 +85,6 @@ public class MovieForm extends JFrame implements WindowListener{
                 }
             }
 
-
         });
 
 

@@ -17,15 +17,13 @@ public class MovieDatabase {
     private static MovieDataModel movieDataModel;
 
     public static void main(String args[]) {
+
         //(If needed) create database and add sample data
         setup();
         reloadAllMovies();
         MovieForm tableGUI = new MovieForm(movieDataModel);
-        if (rs!=null) {
 
-        } else {
-            shutdown();
-        }
+
     }
 
     public static void reloadAllMovies(){
@@ -74,11 +72,11 @@ public class MovieDatabase {
             statement.executeUpdate(createTableSQL);
             System.out.println("Created movies table");
             //Add some test data          
-            String addDataSQL = "INSERT INTO movies VALUES ('Terminator', 1995, 5)";
+            String addDataSQL = "INSERT INTO movies VALUES ('Back to the future', 1985, 5)";
             statement.executeUpdate(addDataSQL);
-             addDataSQL = "INSERT INTO movies VALUES ('Lego', 1985, 3)";
+             addDataSQL = "INSERT INTO movies VALUES ('Back to the Future II', 1989, 4)";
             statement.executeUpdate(addDataSQL);
-             addDataSQL = "INSERT INTO movies VALUES ('Grrr', 1999, 4)";
+             addDataSQL = "INSERT INTO movies VALUES ('Back to the Future III', 1990, 3)";
 
             statement.executeUpdate(addDataSQL);
 
@@ -87,8 +85,6 @@ public class MovieDatabase {
             System.out.println(se);
         }
     }
-
-
 
 
     public static void shutdown(){
