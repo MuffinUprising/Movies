@@ -27,6 +27,7 @@ public class MovieForm extends JFrame implements WindowListener{
         setContentPane(rootPanel);
         pack();
         setTitle("Movie Database Application");
+        addWindowListener(this);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -111,18 +112,18 @@ public class MovieForm extends JFrame implements WindowListener{
     }
 
     //windowListener methods. Only need one of them, but are required to implement them anyway
-    //WindowClosed will called DB shutdown code.
+    //WindowClosing will call DB shutdown code.
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        System.out.println("closing");
+        MovieDatabase.shutdown();}
+
+    @Override
+    public void windowClosed(WindowEvent e) {}
 
     @Override
     public void windowOpened(WindowEvent e) {}
-
-    @Override
-    public void windowClosing(WindowEvent e) {}
-
-    @Override
-    public void windowClosed(WindowEvent e) {
-        MovieDatabase.shutdown();
-    }
 
     @Override
     public void windowIconified(WindowEvent e) {}
