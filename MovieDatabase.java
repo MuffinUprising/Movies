@@ -63,14 +63,20 @@ public class MovieDatabase {
         try {
             conn = DriverManager.getConnection(PROTOCOL + DB_NAME + ";create=true", USER, PASS);
 
-            // The first argument allows us to move both forward and backwards through the RowSet
+            // The first argument ResultSet.TYPE_SCROLL_INSENSITIVE
+            // allows us to move the cursor both forward and backwards through the RowSet
             // we get from this statement.
-            // The TableModel will need to do go backward and forward.
-            // by default, you can only move forward - it's what most apps do and it's less            
+
+            // (Some databases support TYPE_SCROLL_SENSITIVE, which means the ResultSet will be updated when
+            // something else changes the database. Since Derby is embedded we don't need to worry about anything
+            // else updating the database. If you were using a server DB you might need to be concerned about this.)
+
+            // The TableModel will need to go forward and backward through the ResultSet.
+            // by default, you can only move forward - it's less
             // resource-intensive than being able to go in both directions.            
             // If you set one argument, you need the other. 
             // The second one (CONCUR_UPDATABLE) means you will be able to change the ResultSet and see the changes in the DB
-            statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE, ResultSet.HOLD_CURSORS_OVER_COMMIT);
+            statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
             //Create a table in the database with 3 columns: Movie title, year and rating
             String createTableSQL = "CREATE TABLE " + MOVIE_TABLE_NAME + " ("+ TITLE_COLUMN + " varchar(50), "+ YEAR_COLUMN + " int, " + RATING_COLUMN + " int)";

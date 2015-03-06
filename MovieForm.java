@@ -22,6 +22,7 @@ public class MovieForm extends JFrame implements WindowListener{
     private JSpinner ratingSpinner;
 
     MovieForm(final MovieDataModel movieDataTableModel){
+
         setContentPane(rootPanel);
         pack();
         setTitle("Movie Database Application");
@@ -34,15 +35,12 @@ public class MovieForm extends JFrame implements WindowListener{
         movieDataTable.setGridColor(Color.BLACK);
         movieDataTable.setModel(movieDataTableModel);
 
-        //JTable's columnmodel
-
-
         //Set up the rating spinner.
-        //SpinnerNumberModel constructor arguments: spinner's initial value, min, max, step,
+        //SpinnerNumberModel constructor arguments: spinner's initial value, min, max, step.
         ratingSpinner.setModel(new SpinnerNumberModel(1, MovieDatabase.MOVIE_MIN_RATING, MovieDatabase.MOVIE_MAX_RATING, 1));
 
-        //Event handlers for buttons
 
+        //Event handlers for add, delete and quit buttons
         addNewMovieButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -82,8 +80,8 @@ public class MovieForm extends JFrame implements WindowListener{
                     //The table model makes calls that look like they've have updated the resultSet, and which update the database.
                     //What actually happens is that the resultset does update the database, but it doesn't update itself.
                     //Since the table model is using a ResultSet, it won't see the changes.
-                    //(Other databases can support updatable ResultSets.)
-                    //So with Derby, we need to close the current resultset and request a new one
+                    //(Other databases can support updatable ResultSets, where both the DB and ResultSet change.)
+                    //But with Derby, we need to close the current ResultSet and request a new one
                     MovieDatabase.loadAllMovies();
                 } else {
                     JOptionPane.showMessageDialog(rootPane, "Error adding new movie");
