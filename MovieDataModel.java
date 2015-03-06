@@ -169,5 +169,17 @@ public class MovieDataModel extends AbstractTableModel {
 
     }
 
+    @Override
+    public String getColumnName(int col){
+        //Get from ResultSet metadata
+        //TODO translate DB column names into something nicer for display, so "YEAR_RELEASED" becomes "Year Released"
+        try {
+            return resultSet.getMetaData().getColumnName(col + 1);
+        } catch (SQLException se) {
+            System.out.println("Error fetching column names" + se);
+            return "?";
+        }
+    }
+
 
 }

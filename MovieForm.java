@@ -11,7 +11,7 @@ import java.util.Calendar;
 /**
  * Created by admin on 3/5/15.
  */
-public class MovieForm extends JFrame implements WindowListener, TableModelListener{
+public class MovieForm extends JFrame implements WindowListener{
     private JTable movieDataTable;
     private JPanel rootPanel;
     private JTextField titleTextField;
@@ -21,11 +21,6 @@ public class MovieForm extends JFrame implements WindowListener, TableModelListe
     private JButton deleteMovieButton;
     private JSpinner ratingSpinner;
 
-    @Override
-    public void tableChanged(TableModelEvent e) {
-        System.out.println("data changed");
-    }
-
     MovieForm(final MovieDataModel movieDataTableModel){
         setContentPane(rootPanel);
         pack();
@@ -34,13 +29,19 @@ public class MovieForm extends JFrame implements WindowListener, TableModelListe
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+
         //Set up JTable
         movieDataTable.setGridColor(Color.BLACK);
         movieDataTable.setModel(movieDataTableModel);
-        movieDataTableModel.addTableModelListener(this);
 
-        //Constructor arguments: spinner's initial value, min, max, step,
+        //JTable's columnmodel
+
+
+        //Set up the rating spinner.
+        //SpinnerNumberModel constructor arguments: spinner's initial value, min, max, step,
         ratingSpinner.setModel(new SpinnerNumberModel(1, MovieDatabase.MOVIE_MIN_RATING, MovieDatabase.MOVIE_MAX_RATING, 1));
+
+        //Event handlers for buttons
 
         addNewMovieButton.addActionListener(new ActionListener() {
             @Override
