@@ -1,7 +1,6 @@
-import com.sun.codemodel.internal.JOp;
-
 import javax.swing.*;
-import javax.swing.table.TableModel;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,7 +11,7 @@ import java.util.Calendar;
 /**
  * Created by admin on 3/5/15.
  */
-public class MovieForm extends JFrame implements WindowListener{
+public class MovieForm extends JFrame implements WindowListener, TableModelListener{
     private JTable movieDataTable;
     private JPanel rootPanel;
     private JTextField titleTextField;
@@ -22,6 +21,10 @@ public class MovieForm extends JFrame implements WindowListener{
     private JButton deleteMovieButton;
     private JSpinner ratingSpinner;
 
+    @Override
+    public void tableChanged(TableModelEvent e) {
+        System.out.println("data changed");
+    }
 
     MovieForm(final MovieDataModel movieDataTableModel){
         setContentPane(rootPanel);
@@ -34,9 +37,10 @@ public class MovieForm extends JFrame implements WindowListener{
         //Set up JTable
         movieDataTable.setGridColor(Color.BLACK);
         movieDataTable.setModel(movieDataTableModel);
+        movieDataTableModel.addTableModelListener(this);
 
         //Constructor arguments: spinner's initial value, min, max, step,
-        ratingSpinner.setModel(new SpinnerNumberModel(1, 1, 5, 1));
+        ratingSpinner.setModel(new SpinnerNumberModel(1, MovieDatabase.MOVIE_MIN_RATING, MovieDatabase.MOVIE_MAX_RATING, 1));
 
         addNewMovieButton.addActionListener(new ActionListener() {
             @Override
@@ -79,7 +83,7 @@ public class MovieForm extends JFrame implements WindowListener{
                     //Since the table model is using a ResultSet, it won't see the changes.
                     //(Other databases can support updatable ResultSets.)
                     //So with Derby, we need to close the current resultset and request a new one
-                    MovieDatabase.reloadAllMovies();
+                    MovieDatabase.loadAllMovies();
                 } else {
                     JOptionPane.showMessageDialog(rootPane, "Error adding new movie");
                 }
@@ -102,7 +106,7 @@ public class MovieForm extends JFrame implements WindowListener{
                 int currentRow = movieDataTable.getSelectedRow();
                 boolean deleted = movieDataTableModel.deleteRow(currentRow);
                 if (deleted) {
-                    MovieDatabase.reloadAllMovies();
+                    MovieDatabase.loadAllMovies();
                 } else {
                     JOptionPane.showMessageDialog(rootPane, "Error deleting movie");
                 }

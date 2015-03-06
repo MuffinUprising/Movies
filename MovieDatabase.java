@@ -14,22 +14,24 @@ public class MovieDatabase {
     public final static String yearColumn = "year_released";
     public final static String ratingColumn = "rating";
 
+    public final static int MOVIE_MIN_RATING = 1;
+    public final static int MOVIE_MAX_RATING = 5;
+
+
     private static MovieDataModel movieDataModel;
 
     public static void main(String args[]) {
 
-        //(If needed) create database and add sample data
+        //setup creates database (if it doesn't exist), opens connection, and adds sample data
         setup();
-        reloadAllMovies();
+        loadAllMovies();
         MovieForm tableGUI = new MovieForm(movieDataModel);
-
 
     }
 
-    public static void reloadAllMovies(){
+    //Create or recreate a ResultSet containing the whole database, and give it to movieDataModel
+    public static void loadAllMovies(){
         try{
-            //Query the database to fetch all of the data
-
             if (rs!=null) {
                 rs.close();
             }
@@ -37,19 +39,17 @@ public class MovieDatabase {
             rs = statement.executeQuery(getAllData);
 
             if (movieDataModel == null) {
+                //If no current movieDataModel, then make one
                 movieDataModel = new MovieDataModel(rs);
             } else {
+                //Or, if one already exists, update its ResultSet
                 movieDataModel.updateResultSet(rs);
             }
 
-
-           // movieDataModel.updateResultSet(rs);
-
         } catch (Exception e) {
-            e.printStackTrace();
-            shutdown();
+            System.out.println("Error reloading movies");
+            System.out.println(e);
         }
-
 
     }
 
@@ -57,7 +57,7 @@ public class MovieDatabase {
         try {
             conn = DriverManager.getConnection(protocol + dbName + ";create=true", USER, PASS);
 
-            //The first argument allows us to move both forward and backwards through the RowSet
+            // The first argument allows us to move both forward and backwards through the RowSet
             // we get from this statement.
             // The TableModel will need to do go backward and forward.
             // by default, you can only move forward - it's what most apps do and it's less            
@@ -67,17 +67,16 @@ public class MovieDatabase {
             statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE, ResultSet.HOLD_CURSORS_OVER_COMMIT);
 
             //Create a table in the database with 3 columns: Movie title, year and rating
-            
             String createTableSQL = "CREATE TABLE " + movieTableName + " ("+ titleColumn + " varchar(50), "+ yearColumn + " int, " + ratingColumn + " int)";
             statement.executeUpdate(createTableSQL);
+
             System.out.println("Created movies table");
             //Add some test data          
             String addDataSQL = "INSERT INTO movies VALUES ('Back to the future', 1985, 5)";
             statement.executeUpdate(addDataSQL);
-             addDataSQL = "INSERT INTO movies VALUES ('Back to the Future II', 1989, 4)";
+            addDataSQL = "INSERT INTO movies VALUES ('Back to the Future II', 1989, 4)";
             statement.executeUpdate(addDataSQL);
-             addDataSQL = "INSERT INTO movies VALUES ('Back to the Future III', 1990, 3)";
-
+            addDataSQL = "INSERT INTO movies VALUES ('Back to the Future III', 1990, 3)";
             statement.executeUpdate(addDataSQL);
 
         } catch (SQLException se) {
@@ -86,7 +85,7 @@ public class MovieDatabase {
         }
     }
 
-
+    //Close the ResultSet, statement and connection
     public static void shutdown(){
         try {
             if (rs != null) {
