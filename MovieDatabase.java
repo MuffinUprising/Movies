@@ -97,7 +97,7 @@ public class MovieDatabase {
         }
     }
 
-    //Close the ResultSet, statement and connection
+    //Close the ResultSet, statement and connection, in that order.
     public static void shutdown(){
         try {
             if (rs != null) {
@@ -120,7 +120,7 @@ public class MovieDatabase {
 
         try {
             if (conn != null) {
-                conn.close();  //Close connection to database             
+                conn.close();
                 System.out.println("Database connection closed");
             }
         }
