@@ -105,7 +105,7 @@ public class MovieDataModel extends AbstractTableModel {
         //to make a new ResultSet to see the changes.
         try {
             resultSet.absolute(row + 1);
-            resultSet.updateInt(MovieDatabase.ratingColumn, newRating);
+            resultSet.updateInt(MovieDatabase.RATING_COLUMN, newRating);
             resultSet.updateRow();
             fireTableDataChanged();
         } catch (SQLException e) {
@@ -149,9 +149,9 @@ public class MovieDataModel extends AbstractTableModel {
         try {
             //Move to insert row, insert the appropriate data in each column, insert the row, move cursor back to where it was before we started
             resultSet.moveToInsertRow();
-            resultSet.updateString(MovieDatabase.titleColumn, title);
-            resultSet.updateInt(MovieDatabase.yearColumn, year);
-            resultSet.updateInt(MovieDatabase.ratingColumn, rating);
+            resultSet.updateString(MovieDatabase.TITLE_COLUMN, title);
+            resultSet.updateInt(MovieDatabase.YEAR_COLUMN, year);
+            resultSet.updateInt(MovieDatabase.RATING_COLUMN, rating);
             resultSet.insertRow();
             resultSet.moveToCurrentRow();
             fireTableDataChanged();
@@ -171,7 +171,7 @@ public class MovieDataModel extends AbstractTableModel {
 
     @Override
     public String getColumnName(int col){
-        //Get from ResultSet metadata
+        //Get from ResultSet metadata, which contains the database column names
         //TODO translate DB column names into something nicer for display, so "YEAR_RELEASED" becomes "Year Released"
         try {
             return resultSet.getMetaData().getColumnName(col + 1);

@@ -1,22 +1,22 @@
 import java.sql.*;
 
 public class MovieDatabase {
-    private static String protocol = "jdbc:derby:";
-    private static String dbName = "movieDB";
+    private static final String PROTOCOL = "jdbc:derby:";
+    private static final String DB_NAME = "movieDB";
     private static final String USER = "user";
     private static final String PASS = "password";
+
     static Statement statement = null;
     static Connection conn = null;
     static ResultSet rs = null;
 
-    public final static String movieTableName = "movies";
-    public final static String titleColumn = "title";
-    public final static String yearColumn = "year_released";
-    public final static String ratingColumn = "rating";
+    public final static String MOVIE_TABLE_NAME = "movies";
+    public final static String TITLE_COLUMN = "title";
+    public final static String YEAR_COLUMN = "year_released";
+    public final static String RATING_COLUMN = "rating";
 
     public final static int MOVIE_MIN_RATING = 1;
     public final static int MOVIE_MAX_RATING = 5;
-
 
     private static MovieDataModel movieDataModel;
 
@@ -25,16 +25,22 @@ public class MovieDatabase {
         //setup creates database (if it doesn't exist), opens connection, and adds sample data
         setup();
         loadAllMovies();
+
+        //Start GUI
+
         MovieForm tableGUI = new MovieForm(movieDataModel);
 
     }
 
     //Create or recreate a ResultSet containing the whole database, and give it to movieDataModel
     public static void loadAllMovies(){
+
         try{
+
             if (rs!=null) {
                 rs.close();
             }
+
             String getAllData = "SELECT * FROM movies";
             rs = statement.executeQuery(getAllData);
 
@@ -47,7 +53,7 @@ public class MovieDatabase {
             }
 
         } catch (Exception e) {
-            System.out.println("Error reloading movies");
+            System.out.println("Error loading or reloading movies");
             System.out.println(e);
         }
 
@@ -55,7 +61,7 @@ public class MovieDatabase {
 
     public static void setup(){
         try {
-            conn = DriverManager.getConnection(protocol + dbName + ";create=true", USER, PASS);
+            conn = DriverManager.getConnection(PROTOCOL + DB_NAME + ";create=true", USER, PASS);
 
             // The first argument allows us to move both forward and backwards through the RowSet
             // we get from this statement.
@@ -67,7 +73,7 @@ public class MovieDatabase {
             statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE, ResultSet.HOLD_CURSORS_OVER_COMMIT);
 
             //Create a table in the database with 3 columns: Movie title, year and rating
-            String createTableSQL = "CREATE TABLE " + movieTableName + " ("+ titleColumn + " varchar(50), "+ yearColumn + " int, " + ratingColumn + " int)";
+            String createTableSQL = "CREATE TABLE " + MOVIE_TABLE_NAME + " ("+ TITLE_COLUMN + " varchar(50), "+ YEAR_COLUMN + " int, " + RATING_COLUMN + " int)";
             statement.executeUpdate(createTableSQL);
 
             System.out.println("Created movies table");
